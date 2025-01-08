@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}Transacties{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Transacties</h2>
+
+    <form method="POST" class="bg-white p-6 rounded-lg shadow-md mb-8">
+        {% csrf_token %}
+        <div class="space-y-4">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="w-full py-3 mt-4 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200">Voeg Transactie Toe</button>
+    </form>
+
+    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Jouw Transacties:</h3>
+    
+    <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table class="table-auto w-full text-sm text-left text-gray-700">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 border-b font-medium">Datum</th>
+                    <th class="px-4 py-2 border-b font-medium">Beschrijving</th>
+                    <th class="px-4 py-2 border-b font-medium">Categorie</th>
+                    <th class="px-4 py-2 border-b font-medium">Bedrag</th>
+                    <th class="px-4 py-2 border-b font-medium"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 border-b">{{ transaction.date }}</td>
+                    <td class="px-4 py-2 border-b">{{ transaction.description }}</td>
+                    <td class="px-4 py-2 border-b">{{ transaction.get_category_display }}</td>
+                    <td class="px-4 py-2 border-b">{{ transaction.amount }}</td>
+                    <td class="px-4 py-2 border-b">
+                        <a href="{% url 'remove_transaction' transaction.id %}" 
+                           onclick="return confirm('Weet je zeker dat je deze transactie wilt verwijderen?');"
+                           class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded">
+                            Remove
+                        </a>
+                    </td>
+                    
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-4 py-2 text-center text-gray-500">Geen transacties gevonden.</td>
+                </tr>   
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

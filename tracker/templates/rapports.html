@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+
+{% block cdn %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block title %}
+    Rapporten
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-semibold text-center mb-6">Jouw Financiële Rapporten</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Huidige Balans</h2>
+            <div class="text-2xl text-center text-gray-800">
+                € {{ user_info.saved_money|floatformat:2 }}
+            </div>
+        </div>
+
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Maandelijks Inkomsten (netto)</h2>
+            <div class="text-2xl text-center text-gray-800">
+                € {{ user_info.monthly_income_netto|floatformat:2 }}
+            </div>
+        </div>
+
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Maandelijks Uitgaven</h2>
+            <div class="text-2xl text-center text-gray-800">
+                € {{ user_info.monthly_expenses|floatformat:2 }}
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <h2 class="text-2xl font-semibold mb-4">Grafieken en Analyse</h2>
+        <p class="text-gray-600 mb-4">Hier heb je verschillende grafieken</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Grafiek: Inkomsten vs Uitgaven -->
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-center mb-4">Inkomsten vs Uitgaven</h3>
+                <div style="height: 300px; width: 300px; max-width: 100%; max-height: 100%;">
+                    <canvas id="chart1"></canvas>
+                </div>
+            </div>
+
+            <!-- Grafiek: Sparen per Maand -->
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-center mb-4">Sparen per Maand</h3>
+
+                <!-- Dropdown voor het selecteren van een jaar -->
+                <div class="mb-4">
+                    <label for="yearSelector" class="block text-gray-700 font-medium mb-2">Selecteer een jaar:</label>
+                    <select id="yearSelector" class="border rounded-lg p-2 w-full">
+                        {% for year_data in yearly_savings %}
+                        <option value="{{ year_data.year }}">{{ year_data.year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="height: 300px; width: 3000px; max-width: 100%; max-height: 100%;">
+                    <canvas id="chart3"></canvas>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-center mb-4">Uitgaven per Categorie</h3>
+                <div style="height: 300px; width: 300px; max-width: 100%; max-height: 100%;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // "Inkomsten vs Uitgaven" Chart
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        const chart1 = new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: ['Inkomsten', 'Uitgaven'],
+                datasets: [{
+                    label: 'Maandelijkse Gegevens',
+                    data: [
+                        {{ user_info.monthly_income_netto }},
+                        {{ user_info.monthly_expenses }},
+                    ],
+                    backgroundColor: ['#4CAF50', '#FF6347'],
+                    borderColor: ['#388E3C', '#C62828'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': € ' + tooltipItem.raw.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // "Sparen per Maand" Chart
+        const yearlySavings = {{ yearly_savings|safe }};
+        let currentYear = yearlySavings[0].year;
+        let currentSavings = yearlySavings[0].savings_per_month;
+
+        const ctx3 = document.getElementById('chart3').getContext('2d');
+        const chart3 = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Januari', 'Februari', 'Maart', 'April',
+                    'Mei', 'Juni', 'Juli', 'Augustus',
+                    'September', 'Oktober', 'November', 'December'
+                ],
+                datasets: [{
+                    label: `Sparen in ${currentYear} (€)`,
+                    data: currentSavings,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return '€ ' + tooltipItem.raw.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Maanden',
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Bedrag (€)',
+                        },
+                        beginAtZero: true,
+                    }
+                }
+            }
+        });
+
+        document.getElementById('yearSelector').addEventListener('change', function () {
+            const selectedYear = parseInt(this.value);
+            const selectedData = yearlySavings.find(data => data.year === selectedYear);
+
+            if (selectedData) {
+                currentYear = selectedData.year;
+                currentSavings = selectedData.savings_per_month;
+
+                chart3.data.datasets[0].data = currentSavings;
+                chart3.data.datasets[0].label = `Sparen in ${currentYear} (€)`;
+                chart3.update();
+            }
+        });
+    </script>
+    <script>
+        // "Uitgaven per Categorie" Chart
+        const categoryData = {{ categories|safe }};
+        const categoryLabels = Object.keys(categoryData);
+        const categoryValues = Object.values(categoryData);
+    
+        const ctx2 = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Uitgaven per Categorie (€)',
+                    data: categoryValues,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                    borderColor: ['#C62828', '#1565C0', '#F9A825', '#00897B'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': € ' + tooltipItem.raw.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</div>
+{% endblock %}
