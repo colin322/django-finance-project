@@ -7,7 +7,7 @@ from tracker.utils import update_savings_balance
 @login_required
 def rapports(request):
     update_savings_balance()
-    user_info = UserInfo.objects.get(user=request.user)
+    user_info, created = UserInfo.objects.get_or_create(user=request.user)
     
     categories = {
         'Boodschappen': user_info.groceries,

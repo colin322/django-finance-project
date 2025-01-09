@@ -39,36 +39,24 @@
         <h2 class="text-2xl font-semibold mb-4">Grafieken en Analyse</h2>
         <p class="text-gray-600 mb-4">Hier heb je verschillende grafieken</p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Grafiek: Inkomsten vs Uitgaven -->
-            <div class="bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-white shadow-lg rounded-lg p-6 flex flex-col justify-center items-center">
                 <h3 class="text-xl font-semibold text-center mb-4">Inkomsten vs Uitgaven</h3>
-                <div style="height: 300px; width: 300px; max-width: 100%; max-height: 100%;">
+                <div class="flex justify-center items-center" style="height: 300px; width: 300px; max-width: 100%; max-height: 100%;">
                     <canvas id="chart1"></canvas>
                 </div>
             </div>
 
-            <!-- Grafiek: Sparen per Maand -->
-            <div class="bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-white shadow-lg rounded-lg p-6 flex flex-col justify-center items-center">
                 <h3 class="text-xl font-semibold text-center mb-4">Sparen per Maand</h3>
-
-                <!-- Dropdown voor het selecteren van een jaar -->
-                <div class="mb-4">
-                    <label for="yearSelector" class="block text-gray-700 font-medium mb-2">Selecteer een jaar:</label>
-                    <select id="yearSelector" class="border rounded-lg p-2 w-full">
-                        {% for year_data in yearly_savings %}
-                        <option value="{{ year_data.year }}">{{ year_data.year }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div style="height: 300px; width: 3000px; max-width: 100%; max-height: 100%;">
-                    <canvas id="chart3"></canvas>
+                <div class="flex justify-center items-center" style="height: 300px; width: 3000px; max-width: 100%; max-height: 100%;">
+                    <canvas id="chart2"></canvas>
                 </div>
             </div>
-            <div class="bg-white shadow-lg rounded-lg p-6">
+
+            <div class="bg-white shadow-lg rounded-lg p-6 flex flex-col justify-center items-center">
                 <h3 class="text-xl font-semibold text-center mb-4">Uitgaven per Categorie</h3>
-                <div style="height: 300px; width: 300px; max-width: 100%; max-height: 100%;">
-                    <canvas id="categoryChart"></canvas>
+                <div class="flex justify-center items-center" style="height: 300px; width: 300px; max-width: 100%; max-height: 100%;">
+                    <canvas id="chart3"></canvas>
                 </div>
             </div>
         </div>
@@ -111,8 +99,8 @@
         let currentYear = yearlySavings[0].year;
         let currentSavings = yearlySavings[0].savings_per_month;
 
-        const ctx3 = document.getElementById('chart3').getContext('2d');
-        const chart3 = new Chart(ctx3, {
+        const ctx3 = document.getElementById('chart2').getContext('2d');
+        const chart2 = new Chart(ctx3, {
             type: 'bar',
             data: {
                 labels: [
@@ -169,9 +157,9 @@
                 currentYear = selectedData.year;
                 currentSavings = selectedData.savings_per_month;
 
-                chart3.data.datasets[0].data = currentSavings;
-                chart3.data.datasets[0].label = `Sparen in ${currentYear} (€)`;
-                chart3.update();
+                chart2.data.datasets[0].data = currentSavings;
+                chart2.data.datasets[0].label = `Sparen in ${currentYear} (€)`;
+                chart2.update();
             }
         });
     </script>
@@ -181,7 +169,7 @@
         const categoryLabels = Object.keys(categoryData);
         const categoryValues = Object.values(categoryData);
     
-        const ctx2 = document.getElementById('categoryChart').getContext('2d');
+        const ctx2 = document.getElementById('chart3').getContext('2d');
         const categoryChart = new Chart(ctx2, {
             type: 'doughnut',
             data: {
