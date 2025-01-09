@@ -9,16 +9,16 @@ Python 3.8+
 1. **Clone de repository**:
 
     ```bash
-    git clone https://github.com/your-username/finance-tracker.git
+    git clone git@github.com:colin322/django-finance-project.git
     cd finance-tracker
     ```
 
 2. **Maak een virtuele omgeving aan (optioneel maar aanbevolen)**:
 
     ```bash
-    python -m venv venv
+    py -m venv venv
     source venv/bin/activate  # Voor Mac/Linux
-    venv\Scripts\activate     # Voor Windows
+    venv/Scripts/activate     # Voor Windows
     ```
 
 3. **Installeer de benodigde Python-pakketten**:
@@ -35,13 +35,13 @@ Zie `.env.example` om te zien hoe het `.env`-bestand eruit moet zien. Voer bij `
 5. **Voer de migraties uit om de database in te stellen**:
 
     ```bash
-    python manage.py migrate
+    py manage.py migrate
     ```
 
 6. **Start de server**:
 
     ```bash
-    python manage.py runserver
+    py manage.py runserver
     ```
 
 7. Ga naar [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in je webbrowser.
