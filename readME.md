@@ -27,19 +27,24 @@ Python 3.8+
     pip install -r requirements.txt
     ```
 
-4. **Voer de migraties uit om de database in te stellen**:
+4. **Maak een .env bestand**
+
+Zie `.env.example` om te zien hoe het `.env`-bestand eruit moet zien. Voer bij `SECRET_KEY` je geheime sleutel in. Je kunt `DEBUG` op `False` laten en voor `ALLOWED_HOSTS` kun je `'*'` gebruiken.
+
+
+5. **Voer de migraties uit om de database in te stellen**:
 
     ```bash
     python manage.py migrate
     ```
 
-5. **Start de server**:
+6. **Start de server**:
 
     ```bash
     python manage.py runserver
     ```
 
-6. Ga naar [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in je webbrowser.
+7. Ga naar [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in je webbrowser.
 
 ---
 
