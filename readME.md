@@ -33,7 +33,7 @@ Python 3.8+
     python manage.py migrate
     ```
 
-5. **Start de ontwikkelserver**:
+5. **Start de server**:
 
     ```bash
     python manage.py runserver
@@ -48,4 +48,4 @@ Python 3.8+
 1. Registreer een account of log in als je al een account hebt.
 2. Vul je persoonlijke financiële gegevens in, zoals maandinkomen, uitgaven en spaargeld.
 3. Stel doelen in en houd je voortgang bij.
-4. Bekijk de rapporten om inzicht te krijgen in je financiële situatie.
+4. Bekijk de rapporten om meer inzicht te krijgen.
